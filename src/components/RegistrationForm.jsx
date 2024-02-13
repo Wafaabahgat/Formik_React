@@ -1,10 +1,22 @@
 // RegistrationForm.js
-import React from "react";
+import React, { useState } from "react";
 import Form from "./form";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const RegistrationForm = () => {
+  const handleFileChange = (e) => {
+    const file = e.currentTarget.files[0];
+    formik.setFieldValue("file", file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        formik.setFieldValue("filePreview", e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -32,6 +44,7 @@ const RegistrationForm = () => {
       console.log(values);
     },
   });
+
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -85,6 +98,23 @@ const RegistrationForm = () => {
               <div className="text-red-500 text-xs mt-1">
                 {formik.errors.email}
               </div>
+            )}
+          </Form>
+          <Form
+            type="file"
+            id="file"
+            name="file"
+            ttl="Upload File"
+            onChange={handleFileChange}
+
+            // onChange={(e) => setimage(uploadImg(e))}
+          >
+            {formik.values.filePreview && (
+              <img
+                src={formik.values.filePreview}
+                alt="Preview"
+                className="mt-2 max-w-full h-auto"
+              />
             )}
           </Form>
 
